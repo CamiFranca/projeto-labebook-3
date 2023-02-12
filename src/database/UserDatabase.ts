@@ -1,5 +1,5 @@
 import { Users } from "../models/User"
-import { TUsers, TUsersLogin } from "../../type"
+import { TUsers, TUsersLogin } from "../type"
 import { BaseDatabase } from "./BaseDatabase";
 
 

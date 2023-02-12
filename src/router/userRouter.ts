@@ -2,7 +2,7 @@ import express from "express"
 import { UserBusiness } from "../business/UsersBusiness"
 import { UserController } from "../controller/UsersController"
 import { UserDatabase } from "../database/UserDatabase"
-import { UserDTO } from "../dtos/UserDTO"
+import { UserDTO } from "../dtos/UsersDTO"
 
 export const  userRouter = express.Router()
 

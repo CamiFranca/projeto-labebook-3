@@ -1,6 +1,6 @@
 import { UserDatabase } from "../database/UserDatabase"
 import { Users } from "../models/User"
-import { TUsers, TUsersLogin } from "../../type"
+import { TUsers, TUsersLogin } from "../type"
 import { BadRequestError } from '../errors/BadRequestError'
 
 export class UserBusiness {
