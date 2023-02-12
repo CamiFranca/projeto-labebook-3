@@ -20,7 +20,7 @@ export type TUsersLogin ={
 }
 
 export type TPosting = {
-    email: string,
+    id: string,
     content: string
 }
 

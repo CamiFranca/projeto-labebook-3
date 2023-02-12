@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { UserBusiness } from "../business/UsersBusiness"
-import { UserDTO } from "../dtos/UserDTO"
+import { UserDTO } from "../dtos/UsersDTO"
 import {BaseError} from "../errors/BaseError"
 
 
