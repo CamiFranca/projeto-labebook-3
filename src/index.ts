@@ -2,15 +2,18 @@ import express, { Request, Response } from 'express'
 import cors from 'cors'
 import { PostController } from './controller/PostsController'
 import { userRouter } from './router/userRouter'
-
+import { postRouter } from './router/postRouter'
+import dotenv from 'dotenv'
 
 const app = express()
+
+dotenv.config()
 
 app.use(cors())
 app.use(express.json())
 
-app.listen(3003, () => {
-    console.log(`Servidor rodando na porta ${3003}`)
+app.listen(Number(process.env.PORT), () => {
+    console.log(`Servidor rodando na porta ${process.env.PORT}`)
 })
 
 app.get("/ping", async (req: Request, res: Response) => {
@@ -34,98 +37,8 @@ app.get("/ping", async (req: Request, res: Response) => {
 
 app.use("/users", userRouter)
 
-const postController = new PostController()
+app.post("/posts", postRouter)
 
-// app.post("/posts", postController.userPost)
-
-
-// app.post("/users/signup", async (req: Request, res: Response) => {
-
-
-//     try {
-//         const { newId, newName, newEmail, newPassword, newRole } = req.body
-
-//         const newUser = new User {
-
-//             newId,
-//             newName,
-//             newEmail,
-//             newPassword,
-//             newRole,
-//             new Date().toISOString()
-
-
-//     }
-
-//     const newUserDB: TUsers = {
-
-//         id: newUser.getId(),
-//         name: newUser.getName(),
-//         email: newUser.getEmail(),
-//         password: newUser.getPassword(),
-//         role: newUser.getRule(),
-//         created_at: newUser.getcreated_at()
-
-//     }
-
-
-// })
-
-//     } catch (error) {
-//     console.log(error)
-
-//     if (req.statusCode === 200) {
-//         res.status(500)
-//     }
-
-//     if (error instanceof Error) {
-//         res.send(error.message)
-//     } else {
-//         res.send("Erro inesperado")
-//     }
-// }
-
-
-
-
-// app.post("/users/login", async (res:Response, req:Request)=>{
-
-// try {
-//     const {email, password} = req.body
-
-//     if (typeof email !== "string") {
-//         res.status(400)
-//         throw new Error("'email' deve ser string")
-//     }
-//     if (typeof password !== "string") {
-//         res.status(400)
-//         throw new Error("'password' deve ser string")
-//     }
-
-//    const emailExists = await BaseDatabase.connection(UserDatabase.TABLE_USERS).where({email})
-
-//     if(!emailExists){
-//         res.status(400)
-//         throw new Error ("o Email não existe")
-//     }
-
-//     res.status(201).send("token: 'um token jwt'")
-
-// } catch (error) {
-//     console.log(error)
-
-//     if (req.statusCode === 200) {
-//         res.status(500)
-//     }
-
-//     if (error instanceof Error) {
-//         res.send(error.message)
-//     } else {
-//         res.send("Erro inesperado")
-//     }
-// }
-
-// })
 
 //--------------------------------POST-------------------------------------
 
@@ -200,35 +113,93 @@ const postController = new PostController()
 
 // })
 
-// app.put("/posts/:id", async (res: Response, req: Request) => {
+app.put("/posts/:id", async (res: Response, req: Request) => {
 
-// try {
-//     const { id, content } = req.body
+try {
+    const id = req.params.id
+    const newContent  = req.body.content as string
 
-//     if (typeof id !== "string") {
-//         res.status(400)
-//         throw new Error("'email' deve ser string")
-//     }
+    if (id !== undefined){
+    
+    if (typeof id !== "string") {
+        res.status(400)
+        throw new Error("'id' deve ser string")
+    }
 
-//     if (typeof content !== "string") {
-//         res.status(400)
-//         throw new Error("'email' deve ser string")
-//     }
-// } catch (error) {
-//     console.log(error)
+    if (id[0] !== "p") {
+        res.status(400)
+        throw new Error("'id' deve começar com a letra 'p'")
+    }
+    if (id.length < 3) {
+        res.status(400)
+        throw new Error("'id' deve ter pelo menos três digitos")
+    }
+   }
 
-//     if (req.statusCode === 200) {
-//         res.status(500)
-//     }
+    if (typeof newContent !== "string") {
+        res.status(400)
+        throw new Error("'o conteúdo' deve ser string")
+    }
 
-//     if (error instanceof Error) {
-//         res.send(error.message)
-//     } else {
-//         res.send("Erro inesperado")
-//     }
-// }
 
-// })
+} catch (error) {
+    console.log(error)
+
+    if (req.statusCode === 200) {
+        res.status(500)
+    }
+
+    if (error instanceof Error) {
+        res.send(error.message)
+    } else {
+        res.send("Erro inesperado")
+    }
+}
+
+})
+
+app.delete("posts/:id", async(res: Response, req: Request)=>{
+
+    try {
+        const id = req.params.id
+
+        if (id !== undefined){
+    
+            if (typeof id !== "string") {
+                res.status(400)
+                throw new Error("'id' deve ser string")
+            }
+        
+            if (id[0] !== "p") {
+                res.status(400)
+                throw new Error("'id' deve começar com a letra 'p'")
+            }
+            if (id.length < 3) {
+                res.status(400)
+                throw new Error("'id' deve ter pelo menos três digitos")
+            }
+           }
+            // const idExist = await db.("post").where(id)
+
+
+
+
+    } catch (error) {
+        console.log(error)
+
+        if (req.statusCode === 200) {
+            res.status(500)
+        }
+    
+        if (error instanceof Error) {
+            res.send(error.message)
+        } else {
+            res.send("Erro inesperado")
+        }
+    }
+})
+
+
 // app.get("/posts", async (req: Request, res: Response)=>{
 
 //     try {

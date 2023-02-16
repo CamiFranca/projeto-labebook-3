@@ -1,6 +1,8 @@
 import { PostDatabase } from "../database/PostsDatabase"
+import { createPostOutputDTO, getPostByIdDTO, PostsDB, PostsDTO } from "../dtos/PostsDTO"
+import { BadRequestError } from "../errors/BadRequestError"
 import { Posts } from "../models/Posts"
-import { TPosting, TPosts } from "../type"
+import { TPosting} from "../type"
 
 export class PostBusiness {
 
@@ -8,36 +10,36 @@ export class PostBusiness {
 
         const postDatabase = new PostDatabase()
 
-        const postsDB: TPosts[] = await postDatabase.getPost(q)
+        const postsDB: PostsDB[] = await postDatabase.getPost(q)
 
-        const posts = postsDB.map((post) => {
+        const posts :Posts[] = postsDB.map((post) => new Posts(
             post.id,
-                post.creator_id,
-                post.content,
-                post.likes,
-                post.deslikes,
-                post.created_at,
-                post.update_at
-        })
+            post.creator_id,
+            post.content,
+            post.likes,
+            post.deslikes,
+            post.created_at,
+            post.update_at
+        ))
+
         return posts
 
     }
     public getPostById = async (id: string) => {
 
         if (id[0] !== "p") {
-            throw new Error("O id precisa começar com a letra 'p'.")
+            throw new BadRequestError("O id precisa começar com a letra 'p'.")
         }
         if (id.length < 4) {
-            throw new Error("O id precisa ter pelo menos quatro digitos.")
+            throw new BadRequestError("O id precisa ter pelo menos quatro digitos.")
         }
-
 
         const postDatabase = new PostDatabase()
 
-        const [postsDB]: TPosts[] = await postDatabase.getPostsById(id)
+        const postsDB = await postDatabase.getPostsById(id)
 
 
-        const post = new Posts(
+        const post :Posts = new Posts(
             postsDB.id,
             postsDB.creator_id,
             postsDB.content,
@@ -47,7 +49,7 @@ export class PostBusiness {
             postsDB.update_at
 
         )
-        const outputPost = {
+        const outputPost :getPostByIdDTO = {
             message: "estes são todos os posts",
             id: post.getId(),
             creatorId: post.getCreator_id(),
@@ -58,18 +60,19 @@ export class PostBusiness {
             updateAt: post.getUpdate_at()
 
         }
+
         return outputPost
     }
+//-----------------------------------------------------------
+    public createPost = async (post: TPosting) => {
 
-    public createPost = async (post: TPosting)=>{
-        
-        const {id, content}= post
+        const { id, content } = post
         const postDatabase = new PostDatabase()
 
         const Userlogged = await postDatabase.findUserLogged(id)
 
         if (!Userlogged) {
-        
+
             throw new Error(" O usuário não está logado")
         }
 
@@ -84,7 +87,7 @@ export class PostBusiness {
 
         )
 
-        const postDB = {
+        const postDB : PostsDB = {
 
             id: instantiatePost.getId(),
             creator_id: instantiatePost.getCreator_id(),
@@ -95,11 +98,12 @@ export class PostBusiness {
             update_at: instantiatePost.getUpdate_at()
         }
 
-        await postDatabase.insertContent(postDB,id)
+        await postDatabase.insertContent(postDB, id)
 
-        return {
+        const output = {
             message: "Postagem feita com sucesso!"
         }
+        return output
 
     }
 }

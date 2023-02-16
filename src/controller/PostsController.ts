@@ -4,14 +4,18 @@ import { TPosting, TPosts } from "../type";
 import { PostDatabase } from "../database/PostsDatabase"
 import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostsBusiness";
+import { PostsDTO } from "../dtos/PostsDTO";
 
 
 export class PostController {
+    constructor(
+        private postsDTO: PostsDTO
+    ) { }
 
     public getPosts = async (req: Request, res: Response) => {
 
         try {
-            //entrada
+
             const q = req.query.q as string | undefined
 
             const postDatabase = new PostDatabase()
@@ -36,12 +40,12 @@ export class PostController {
     public getPostById = async (req: Request, res: Response) => {
 
         try {
-     
+
             const id = req.params.id
 
             const postBusiness = new PostBusiness()
             const output = await postBusiness.getPostById(id)
-         
+
             res.status(200).send(output)
 
         } catch (error) {
@@ -63,10 +67,10 @@ export class PostController {
 
         try {
 
-             const post:TPosting = {
-             id: req.body.id,
-             content: req.body.content 
-            }
+            const post = this.postsDTO.createPostInputDTO(
+                req.body.id,
+                req.body.content
+            )
 
             const postBusiness = new PostBusiness()
             const output = await postBusiness.createPost(post)

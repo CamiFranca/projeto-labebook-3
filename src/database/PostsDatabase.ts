@@ -1,5 +1,6 @@
+import { PostsDB } from "../dtos/PostsDTO";
 import { Posts } from "../models/Posts"
-import { TPosting, TPosts } from "../type"
+import { TPosting } from "../type"
 import { BaseDatabase } from "./BaseDatabase";
 
 
@@ -13,12 +14,12 @@ export class PostDatabase extends BaseDatabase {
         let postDB
 
         if(q === undefined){
-            const savePostDB : TPosts[] = await BaseDatabase
+            const savePostDB : PostsDB[] = await BaseDatabase
             .connection(PostDatabase.TABLE_POSTS)
              postDB = savePostDB 
             return postDB
         }else{
-            const savePostDB : TPosts[]= await BaseDatabase
+            const savePostDB : PostsDB[]= await BaseDatabase
             .connection(PostDatabase.TABLE_POSTS)
             .where("name", "LIKE", `%${q}%`)
             postDB = savePostDB
@@ -26,16 +27,16 @@ export class PostDatabase extends BaseDatabase {
         }
     }
 
-    public async getPostsById(id:string): Promise<TPosts[]> {
-        const postDB: TPosts[] = await BaseDatabase
+    public async getPostsById(id:string): Promise<PostsDB> {
+        const postDB: PostsDB[] = await BaseDatabase
             .connection(PostDatabase.TABLE_POSTS)
             .where({id})
 
-        return postDB
+        return postDB[0]
     }
 
 
-    public async insertContent(postDB:TPosts,id:string) {
+    public async insertContent(postDB:PostsDB,id:string) {
         await BaseDatabase
             .connection(PostDatabase.TABLE_POSTS)
             .insert(postDB)
