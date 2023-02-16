@@ -107,3 +107,5 @@ export class UserController {
 
     }
 }
+
+// tokenManage.getPayload(token)

@@ -2,6 +2,7 @@ import { UserDatabase } from "../database/UserDatabase"
 import { Users } from "../models/User"
 import { TUsers, TUsersLogin } from "../type"
 import { BadRequestError } from '../errors/BadRequestError'
+import { CreateUserOutputDTO } from "../dtos/UsersDTO"
 
 export class UserBusiness {
 constructor(
@@ -14,7 +15,7 @@ constructor(
 
         const usersDB: TUsers[] = await this.userDatabase.getUser(q)
 
-        const users = usersDB.map((user) => new Users(
+        const users :Users[] = usersDB.map((user) => new Users(
 
             user.id,
             user.name,
@@ -42,7 +43,7 @@ constructor(
             throw new Error("Esse id não existe.")
         }
 
-        const user = new Users(
+        const user :Users = new Users(
 
             userDB[0].id,
             userDB[0].name,
@@ -104,9 +105,8 @@ constructor(
         }
 
         await this.userDatabase.createUser(newUserDB)
-        const output = {
-            message: "Cadastro realizado com sucesso.",
-            user: newUser
+        const output : CreateUserOutputDTO = {
+            message: "Cadastro realizado com sucesso."
         }
 
         return output
