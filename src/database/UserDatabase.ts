@@ -1,5 +1,4 @@
-import { Users } from "../models/User"
-import { TUsers, TUsersLogin } from "../type"
+import { TUsers, TUsersLogin, UserDB } from "../type"
 import { BaseDatabase } from "./BaseDatabase";
 
 
@@ -32,19 +31,21 @@ export class UserDatabase extends BaseDatabase {
         return saveUsersDB
     }
 
-    public async userLogin(login:TUsersLogin){
-       const loginExists = await BaseDatabase
-       .connection(UserDatabase.TABLE_USERS)
-       .where({login})
-        console.log(loginExists)
-       return loginExists
-    }
     
-    public async createUser(newUserDB: TUsers) {
+    public async createUser(UserDB: UserDB):Promise<void> {
         await BaseDatabase
         .connection(UserDatabase.TABLE_USERS)
-        .insert(newUserDB)
+        .insert(UserDB)
     }
 
+    public async userLogin(email:string): Promise<UserDB|undefined>{
+        const loginExists :UserDB[] = await BaseDatabase
+        .connection(UserDatabase.TABLE_USERS)
+        .select()
+        .where({email:email})
+
+         return loginExists[0]
+     }
+     
 }
 
