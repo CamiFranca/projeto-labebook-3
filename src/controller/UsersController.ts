@@ -1,14 +1,16 @@
 import { Request, Response } from "express"
 import { UserBusiness } from "../business/UsersBusiness"
-import { UserDTO } from "../dtos/UsersDTO"
+import { LoginInputDTO, UserDTO } from "../dtos/UsersDTO"
 import {BaseError} from "../errors/BaseError"
+
 
 
 
 export class UserController {
     constructor(
         private userDTO: UserDTO,
-        private userBusiness: UserBusiness
+        private userBusiness: UserBusiness,
+
 
     ) { }
     public getUsers = async (req: Request, res: Response) => {
@@ -85,7 +87,7 @@ export class UserController {
 
         try {
 
-            const input = {
+            const input :LoginInputDTO = {
                 email: req.body.email,
                 password: req.body.password
 
@@ -93,7 +95,7 @@ export class UserController {
 
             const output = await this.userBusiness.userLogin(input)
 
-            res.status(201).send("token: 'um token jwt'")
+            res.status(200).send(output)
 
         } catch (error) {
             console.log(error)

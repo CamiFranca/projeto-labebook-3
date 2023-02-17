@@ -59,7 +59,7 @@ export class Users {
 
     }
 
-    public toBusinessModel(): UserDB {
+    public toBusinessModel(): UserModel {
         return {
             id: this.id,
             name: this.name,
@@ -70,7 +70,7 @@ export class Users {
         }
     }
 
-    public toDBModel(): UserModel {
+    public toDBModel(): UserDB {
         return {
             id: this.id,
             name: this.name,

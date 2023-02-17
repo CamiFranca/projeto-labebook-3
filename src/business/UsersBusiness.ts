@@ -1,12 +1,20 @@
 import { UserDatabase } from "../database/UserDatabase"
 import { Users } from "../models/User"
-import { TUsers, TUsersLogin } from "../type"
+import { TokenPayload, TUsers, UserDB, USER_ROLE } from "../type"
 import { BadRequestError } from '../errors/BadRequestError'
-import { CreateUserOutputDTO } from "../dtos/UsersDTO"
+import { CreateUserInputDTO, CreateUserOutputDTO, LoginInputDTO, LoginoutputDTO, UserDbDTO } from "../dtos/UsersDTO"
+import { HashManager } from "../services/HashManager"
+import { TokenManager } from "../services/TokenManager"
+import { IdGenerator } from "../services/IdGenerator"
+import { NotFoundError } from "../errors/NotFoundError"
+
 
 export class UserBusiness {
 constructor(
-    private userDatabase : UserDatabase
+    private userDatabase : UserDatabase,
+    private idGenerator : IdGenerator,
+    private tokenManeger: TokenManager,
+    private hashManager :HashManager ,
 ){}
 
 
@@ -21,7 +29,7 @@ constructor(
             user.name,
             user.email,
             user.password,
-            user.role,
+            USER_ROLE.NORMAL,
             user.created_at
 
         ))
@@ -49,7 +57,7 @@ constructor(
             userDB[0].name,
             userDB[0].email,
             userDB[0].password,
-            userDB[0].role,
+            USER_ROLE.NORMAL,
             userDB[0].created_at
 
         )
@@ -57,15 +65,14 @@ constructor(
     }
  //--------------------------------------------------------------------------------
 
-    public createUser = async (input: any) => {
+    public createUser = async (input:CreateUserInputDTO):Promise<CreateUserOutputDTO> => {
 
         const {
             id,
             name,
             email,
             password,
-            role,
-        } = input
+            } = input
 
         if (id[0] !== "u") {
             throw new BadRequestError("O id precisa começar com a letra 'u'.")
@@ -83,37 +90,52 @@ constructor(
         if (userDBExists) {
             throw new BadRequestError("O id já existe.")
         }
+
+        const idGenerator = this.idGenerator.generate()
+
         const newUser = new Users(
 
-            id,
+            idGenerator,
             name,
             email,
             password,
-            role,
+            USER_ROLE.NORMAL,
             new Date().toISOString()
         )
 
-        const newUserDB: TUsers = {
+        // const newUserDB: UserDbDTO = {
 
+        //     id: newUser.getId(),
+        //     name: newUser.getName(),
+        //     email: newUser.getEmail(),
+        //     password: newUser.getPassword(),
+        //     role: newUser.getRole(),
+        //     created_at: newUser.getcreatedAt()
+
+        // }
+
+        const userDB = newUser.toDBModel()
+
+        const payload : TokenPayload = {
             id: newUser.getId(),
             name: newUser.getName(),
-            email: newUser.getEmail(),
-            password: newUser.getPassword(),
-            role: newUser.getRole(),
-            created_at: newUser.getcreatedAt()
-
+            role: newUser.getRole()
         }
 
-        await this.userDatabase.createUser(newUserDB)
-        const output : CreateUserOutputDTO = {
-            message: "Cadastro realizado com sucesso."
+        const token = this.tokenManeger.createToken(payload)
+
+        await this.userDatabase.createUser(userDB)
+
+        const output :CreateUserOutputDTO = {
+            message: "Cadastro realizado com sucesso.",
+            token:token
         }
 
-        return output
+       return output
     }
  //--------------------------------------------------------------------------------
 
-    public userLogin = async (login: TUsersLogin) => {
+    public userLogin = async (login: LoginInputDTO):Promise<LoginoutputDTO> => {
 
         const { email, password } = login
 
@@ -127,14 +149,40 @@ constructor(
             throw new Error("'password' deve possuir pelo menos 5 caracteres")
         }
 
-        const loginExists = await this.userDatabase.userLogin(login)
+        const userDB : UserDB | undefined = await this.userDatabase.userLogin(email)
 
 
-        if (loginExists.length === 0) {
-            throw new Error("o Email não existe")
+        if (userDB === undefined) {
+            throw new NotFoundError("o Email não existe")
         }
 
-        return loginExists
+        const user = new Users(
+            userDB.id,
+            userDB.name,
+            userDB.email,
+            userDB.password,
+            userDB.role,
+            userDB.created_at
+        )
+
+        const isPasswordCorrect = await this.hashManager.compare(password, user.getPassword())
+
+        if(!isPasswordCorrect){
+            throw new BadRequestError("password incorreto.")
+        }
+
+        const payload = {
+            id: user.getId(),
+            name:user.getName(),
+            role:user.getRole()
+        }
+        const token = this.tokenManeger.createToken(payload)
+
+        const backLogin :LoginoutputDTO = {
+            token:token
+        }
+        return backLogin
     }
 }
+
 //--------------------------------------------------------------------------------

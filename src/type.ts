@@ -4,7 +4,7 @@ export type TUsers = {
     name: string,
     email: string,
     password: string,
-    role: string,
+    role: USER_ROLE,
     created_at: string
 }
 export type TUsersSignUp = {
@@ -61,25 +61,26 @@ export interface PostDB {
     update_at :string
 }
 
-export interface UserDB{
-    id :string,
-    name :string,
-    email:string,
-    password:string,
-    role :string,
-    createdAt:string
-}
 export interface UserModel{
     id :string,
     name :string,
     email:string,
     password:string,
-    role :string,
-    created_at:string
+    role :USER_ROLE,
+    createdAt:string
 }
 export enum USER_ROLE {
     NORMAL = "NORMAL",
     ADMIN = "ADMIN"
+}
+
+export interface UserDB{
+    id :string,
+    name :string,
+    email:string,
+    password:string,
+    role:USER_ROLE,
+    created_at:string
 }
 export interface TokenPayload {
     id: string,

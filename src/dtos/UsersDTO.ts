@@ -1,5 +1,4 @@
 import { BadRequestError } from "../errors/BadRequestError"
-import { Users } from "../models/User"
 
 export interface CreateUserInputDTO {
     id: string,
@@ -15,6 +14,15 @@ export interface CreateUserOutputDTO {
     token: string
 }
 
+
+export interface UserDbDTO {
+    id: string,
+    name: string,
+    email: string,
+    password: string,
+    role: string,
+    created_at: string
+}
 export interface LoginInputDTO{
     email: unknown,
     password:unknown

@@ -1,6 +1,6 @@
 
 import { Posts } from "../models/Posts";
-import { TPosting, TPosts } from "../type";
+// import { TPosting, TPosts } from "../type";
 import { PostDatabase } from "../database/PostsDatabase"
 import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostsBusiness";
