@@ -1,109 +1,106 @@
 import { PostDatabase } from "../database/PostsDatabase"
-import { createPostOutputDTO, getPostByIdDTO, PostsDB, PostsDTO } from "../dtos/PostsDTO"
+import { CreatePostIntputDTO } from "../dtos/PostsDTO"
 import { BadRequestError } from "../errors/BadRequestError"
 import { Posts } from "../models/Posts"
-import { TPosting} from "../type"
+import { IdGenerator } from "../services/IdGenerator"
+import { TokenManager } from "../services/TokenManager"
 
 export class PostBusiness {
+    constructor(
+        private postDatabase: PostDatabase,
+        private idGenerator: IdGenerator,
+        private tokenManager: TokenManager,
+    ) { }
 
-    public getPost = async (q: string | undefined) => {
+    // public getPost = async (input: getPostInputDTO): Promise<GetPostOutputDTO> => {
 
-        const postDatabase = new PostDatabase()
+    //try {
+            //     const { token } = input
 
-        const postsDB: PostsDB[] = await postDatabase.getPost(q)
+    //     if (!token) {
+    //         throw new BadRequestError("o token não existe.")
+    //     }
 
-        const posts :Posts[] = postsDB.map((post) => new Posts(
-            post.id,
-            post.creator_id,
-            post.content,
-            post.likes,
-            post.deslikes,
-            post.created_at,
-            post.update_at
-        ))
+    //     const payloade = this.tokenManager.getPayload(token)
 
-        return posts
+    //     if (!payloade) {
+    //         throw new BadRequestError("token inválido.")
+    //     }
+    //     const postsAndCreator : postAndCreatorDB[] = 
+    //     await this.postDatabase.getPostWhithCreator()
 
-    }
-    public getPostById = async (id: string) => {
+    //     const formatPost  = postsAndCreator.map((post) => {
+    //         const posts = new Posts(
+    //             postsAndCreator.id,
+    //             postsAndCreator.content,
+    //             postsAndCreator.likes,
+    //             postsAndCreator.deslikes,
+    //             postsAndCreator.createdAt,
+    //             postsAndCreator.updateAt,
+    //             postsAndCreator.creatorId,
+    //             postsAndCreator.creatorName
 
-        if (id[0] !== "p") {
-            throw new BadRequestError("O id precisa começar com a letra 'p'.")
+    //         )
+
+    //         return posts.toBusinessModel()
+    //     })
+
+    //     const output : GetPostOutputDTO = formatPost
+    //     return output
+
+
+    // }
+    //} catch (error) {
+        
+    //}
+
+
+    //     //-----------------------------------------------------------
+    public createPost = async (input: CreatePostIntputDTO): Promise<void> => {
+
+        try {
+            
+            const { token, content } = input
+
+            if (!token) {
+                throw new BadRequestError("o token não existe.")
+            }
+    
+            const payload = this.tokenManager.getPayload(token)
+    
+            if (!payload) {
+                throw new BadRequestError("o payload não existe.")
+            }
+    
+            if (content !== "string") {
+                throw new BadRequestError("Content precisa ser do tipo string.")
+            }
+    
+            const id = this.idGenerator.generate()
+            const createdAt = new Date().toISOString()
+            const updatAt = new Date().toISOString()
+            const creatorId = payload.id
+            const creatorName = payload.name
+    
+            const post = new Posts(
+                id,
+                content,
+                0,
+                0,
+                createdAt,
+                updatAt,
+                creatorId,
+                creatorName
+    
+            )
+          const postDB = post.toBusinessModel()
+          
+          await this.postDatabase.insert(postDB)
+          
+        } catch (error) {
+            
         }
-        if (id.length < 4) {
-            throw new BadRequestError("O id precisa ter pelo menos quatro digitos.")
-        }
 
-        const postDatabase = new PostDatabase()
-
-        const postsDB = await postDatabase.getPostsById(id)
-
-
-        const post :Posts = new Posts(
-            postsDB.id,
-            postsDB.creator_id,
-            postsDB.content,
-            postsDB.likes,
-            postsDB.deslikes,
-            postsDB.created_at,
-            postsDB.update_at
-
-        )
-        const outputPost :getPostByIdDTO = {
-            message: "estes são todos os posts",
-            id: post.getId(),
-            creatorId: post.getCreator_id(),
-            content: post.getContent(),
-            likes: post.getLikes(),
-            deslikes: post.getDeslikes(),
-            createdAt: post.getCreated_at(),
-            updateAt: post.getUpdate_at()
-
-        }
-
-        return outputPost
-    }
-//-----------------------------------------------------------
-    public createPost = async (post: TPosting) => {
-
-        const { id, content } = post
-        const postDatabase = new PostDatabase()
-
-        const Userlogged = await postDatabase.findUserLogged(id)
-
-        if (!Userlogged) {
-
-            throw new Error(" O usuário não está logado")
-        }
-
-        const instantiatePost = new Posts(
-            "novo post" + id,
-            id,
-            content,
-            0,
-            0,
-            new Date().toDateString(),
-            new Date().toISOString()
-
-        )
-
-        const postDB : PostsDB = {
-
-            id: instantiatePost.getId(),
-            creator_id: instantiatePost.getCreator_id(),
-            content: instantiatePost.getContent(),
-            likes: instantiatePost.getLikes(),
-            deslikes: instantiatePost.getDeslikes(),
-            created_at: instantiatePost.getCreated_at(),
-            update_at: instantiatePost.getUpdate_at()
-        }
-
-        await postDatabase.insertContent(postDB, id)
-
-        const output = {
-            message: "Postagem feita com sucesso!"
-        }
-        return output
 
     }
 }

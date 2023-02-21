@@ -14,7 +14,7 @@ CREATE TABLE posts (
     content  TEXT NOT NULL,
     likes INTEGER DEFAULT (0) NOT NULL,
     deslikes INTEGER DEFAULT(0) NOT NULL,
-    creted_at TEXT DEFAULT(DATETIME()) NOT NULL,
+    created_at TEXT DEFAULT(DATETIME()) NOT NULL,
     update_at TEXT DEFAULT(DATETIME()) NOT NULL,
     FOREIGN KEY (creator_id) REFERENCES users (id)
         ON DELETE CASCADE
@@ -54,4 +54,17 @@ UPDATE posts
 SET deslikes = 1
 WHERE id = "p004";
 
-SELECT * FROM posts;
+SELECT 
+posts.id,
+posts.creator_id,
+posts.content,
+posts.likes,
+posts.deslikes,
+posts.created_at,
+posts.update_at,
+users.name AS creator_name
+FROM posts
+JOIN users
+ON posts.creator_id = users.id;
+
+DROP TABLE posts;
