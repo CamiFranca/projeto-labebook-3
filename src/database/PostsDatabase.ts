@@ -1,7 +1,5 @@
-// import { PostsDB } from "../dtos/PostsDTO";
-import { PostsDB } from "../dtos/PostsDTO";
-import { Posts } from "../models/Posts"
-import { postAndCreatorDB, TPosting } from "../type"
+import { EditePostInputDTO } from "../dtos/PostsDTO";
+import { postAndCreatorDB, PostDB } from "../type"
 import { BaseDatabase } from "./BaseDatabase";
 
 
@@ -10,8 +8,7 @@ export class PostDatabase extends BaseDatabase {
 
     public static TABLE_POSTS = "posts" 
 
-    public async  getPostWhithCreator(){
-        
+    public  getPostWhithCreator = async():Promise <postAndCreatorDB[]> =>{
         const result : postAndCreatorDB[] = await BaseDatabase
         .connection(PostDatabase.TABLE_POSTS)
         .select(
@@ -28,47 +25,26 @@ export class PostDatabase extends BaseDatabase {
             return result
     }
 
-    public insert = async(postDB: PostsDB): Promise <void> => {
+    public insert = async(postDB: PostDB): Promise <void> => {
      await BaseDatabase
-     .connection
+     .connection(PostDatabase.TABLE_POSTS)
      .insert(postDB)
     }
 
+    public idExist = async(idToEdite: string): Promise <PostDB| undefined> => {
+       const result : PostDB[] = await BaseDatabase
+        .connection(PostDatabase.TABLE_POSTS)
+        .where({idToEdite})
+        return result[0]
+
+    }
+
+    public update = async(idToEdite: string, updatePost :any): Promise <void> => {
+        await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
+        .update(updatePost)
+        .where({id :idToEdite})
+
+    }
 }
-    // public async  getPost(q: string | undefined){
 
-    //     let postDB
-
-    //     if(q === undefined){
-    //         const savePostDB : PostsDB[] = await BaseDatabase
-    //         .connection(PostDatabase.TABLE_POSTS)
-    //          postDB = savePostDB 
-    //         return postDB
-    //     }else{
-    //         const savePostDB : PostsDB[]= await BaseDatabase
-    //         .connection(PostDatabase.TABLE_POSTS)
-    //         .where("name", "LIKE", `%${q}%`)
-    //         postDB = savePostDB
-    //         return postDB
-    //     }
-    // }
-
-    // public async getPostsById(id:string): Promise<PostsDB> {
-    //     const postDB: PostsDB[] = await BaseDatabase
-    //         .connection(PostDatabase.TABLE_POSTS)
-    //         .where({id})
-
-    //     return postDB[0]
-    // }
-
-
-   
-
-    // public async findUserLogged(id:string){
-    //   const postingDB =  await BaseDatabase
-    //     .connection(PostDatabase.TABLE_POSTS)
-    //     .where({id})
-
-    //     return postingDB
-    // }
 
