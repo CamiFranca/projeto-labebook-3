@@ -49,6 +49,23 @@ export class Posts {
     public setDeslikes(value: number): void {
         this.deslikes = value
     }
+
+    public addLike(){
+        this.likes +=1
+    }
+
+    public deleteLike(){
+        this.likes -=1
+    }
+
+    public addDeslike(){
+        this.deslikes +=1
+    }
+
+    public removeDeslike(){
+        this.deslikes -=1
+    } 
+
     public getCreated_at(): string {
         return this.createdAt
     }

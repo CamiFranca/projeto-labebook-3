@@ -23,12 +23,12 @@ export interface UserDbDTO {
     role: string,
     created_at: string
 }
-export interface LoginInputDTO{
+export interface LoginInputDTO {
     email: unknown,
-    password:unknown
+    password: unknown
 }
 
-export interface LoginoutputDTO{
+export interface LoginoutputDTO {
     token: string
 }
 
@@ -40,11 +40,14 @@ export class UserDTO {
         email: unknown,
         password: unknown,
         role: unknown
-    ) :CreateUserInputDTO  {
+    ): CreateUserInputDTO {
+        console.log("cu")
+        console.log("antes", id)
 
         if (typeof id !== "string") {
             throw new BadRequestError("'id' deve ser string")
         }
+        console.log("depois", id)
 
         if (typeof name !== "string") {
             throw new BadRequestError("'name' deve ser string")
@@ -60,7 +63,7 @@ export class UserDTO {
         if (typeof role !== "string") {
             throw new BadRequestError("'password' deve ser string")
         }
-        const dto : CreateUserInputDTO = {
+        const dto: CreateUserInputDTO = {
             id,
             name,
             email,
@@ -71,7 +74,7 @@ export class UserDTO {
         return dto
     }
 
-    
+
 
 }
 
