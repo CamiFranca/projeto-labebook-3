@@ -6,6 +6,11 @@ export interface LikeOrDeslikeInputDTO{
     like: unknown
 }
 
+export interface LikeOrDeslikeDB {
+    user_id: string, 
+    post_id: string, 
+    like: number
+}
 // export class Like_deslikeDTO {
   
 //     public LikeInputDTO (

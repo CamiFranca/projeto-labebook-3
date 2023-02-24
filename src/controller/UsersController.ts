@@ -60,13 +60,14 @@ export class UserController {
         try {
 
             const input = this.userDTO.createUserDTO(
+                
                 req.body.id,
                 req.body.name,
                 req.body.email,
                 req.body.password,
                 req.body.role
             )
-
+                console.log("controller",req.body.id)
             const output = await this.userBusiness.createUser(input)
 
             res.status(201).send(output)

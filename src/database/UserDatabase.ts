@@ -1,4 +1,4 @@
-import { TUsers, TUsersLogin, UserDB } from "../type"
+import { TUsers, UserDB } from "../type"
 import { BaseDatabase } from "./BaseDatabase";
 
 

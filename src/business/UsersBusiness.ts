@@ -74,6 +74,7 @@ constructor(
             password,
             } = input
 
+            console.log("business",id)
         if (id[0] !== "u") {
             throw new BadRequestError("O id precisa começar com a letra 'u'.")
         }

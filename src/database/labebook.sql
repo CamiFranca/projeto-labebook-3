@@ -67,4 +67,4 @@ FROM posts
 JOIN users
 ON posts.creator_id = users.id;
 
-DROP TABLE posts;
+SELECT * from users;

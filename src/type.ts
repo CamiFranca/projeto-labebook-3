@@ -50,6 +50,11 @@ export interface LikeDislikeDB {
     like: number
 }
 
+export enum POST_LIKE {
+    ALREADY_LIKED = "ALREADY LIKE",
+    ALREADY_DESLIKED = "ALREADY DESLIKED"
+}
+
 export interface UserDB {
     id: string,
     name: string,
@@ -66,4 +71,13 @@ export interface UserModel {
     password: string,
     role: USER_ROLE,
     createdAt: string
+}
+export interface TUsers {
+
+id:string,
+name:string,
+email:string,
+password:string,
+USER_ROLE:string,
+created_at:string
 }

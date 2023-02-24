@@ -18,7 +18,7 @@ export interface EditePostInputDTO {
 }
 
 export interface DeletePostInputDTO {
-    idToDelite: string,
+    idToDelete: string,
     token: string | undefined,
     
 }
