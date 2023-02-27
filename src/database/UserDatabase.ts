@@ -32,13 +32,23 @@ export class UserDatabase extends BaseDatabase {
     }
 
     
-    public async createUser(UserDB: UserDB):Promise<void> {
+    public async createUser(userDB: UserDB):Promise<void> {
+        console.log("DB",userDB)
         await BaseDatabase
         .connection(UserDatabase.TABLE_USERS)
-        .insert(UserDB)
+        .insert(userDB)
     }
 
-    public async userLogin(email:string): Promise<UserDB|undefined>{
+    public async findEmail(email:string): Promise<UserDB|undefined>  {
+        const emailExists :UserDB[] = await BaseDatabase
+        .connection(UserDatabase.TABLE_USERS)
+        .select()
+        .where({email})
+        return emailExists[0]
+
+    }
+
+    public async userLogin (email:string): Promise<UserDB|undefined>  {
         const loginExists :UserDB[] = await BaseDatabase
         .connection(UserDatabase.TABLE_USERS)
         .select()

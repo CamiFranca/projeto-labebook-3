@@ -1,18 +1,19 @@
 import { BadRequestError } from "../errors/BadRequestError"
 
-export interface CreateUserInputDTO {
-    id: string,
+export interface CreateUserOutputDTO {
     name: string,
     email: string,
     password: string,
-    role: string
-
 }
+// export interface CreateUserInputDTO {
+//     name: unknown,
+//     email: unknown,
+//     password: unknown
+// }
 
-export interface CreateUserOutputDTO {
-    message: string,
-    token: string
-}
+// export interface CreateUserOutputDTO {
+//     token: string
+// }
 
 
 export interface UserDbDTO {
@@ -35,19 +36,10 @@ export interface LoginoutputDTO {
 export class UserDTO {
 
     public createUserDTO(
-        id: unknown,
         name: unknown,
         email: unknown,
         password: unknown,
-        role: unknown
-    ): CreateUserInputDTO {
-        console.log("cu")
-        console.log("antes", id)
-
-        if (typeof id !== "string") {
-            throw new BadRequestError("'id' deve ser string")
-        }
-        console.log("depois", id)
+    ): CreateUserOutputDTO {
 
         if (typeof name !== "string") {
             throw new BadRequestError("'name' deve ser string")
@@ -60,21 +52,17 @@ export class UserDTO {
         if (typeof password !== "string") {
             throw new BadRequestError("'password' deve ser string")
         }
-        if (typeof role !== "string") {
-            throw new BadRequestError("'password' deve ser string")
-        }
-        const dto: CreateUserInputDTO = {
-            id,
+
+        const dto: CreateUserOutputDTO = {
+
             name,
             email,
-            password,
-            role
+            password
+
         }
 
         return dto
     }
-
-
 
 }
 
