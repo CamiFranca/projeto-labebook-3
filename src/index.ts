@@ -35,7 +35,7 @@ app.get("/ping", async (req: Request, res: Response) => {
 
 
 app.use("/users", userRouter)
-app.post("/posts", postRouter)
+app.use("/posts", postRouter)
 
 
 

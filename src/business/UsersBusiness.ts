@@ -2,7 +2,7 @@ import { UserDatabase } from "../database/UserDatabase"
 import { Users } from "../models/User"
 import { TokenPayload, TUsers, UserDB, USER_ROLE } from "../type"
 import { BadRequestError } from '../errors/BadRequestError'
-import { CreateUserInputDTO, CreateUserOutputDTO, LoginInputDTO, LoginoutputDTO, UserDbDTO } from "../dtos/UsersDTO"
+import {CreateUserOutputDTO, LoginInputDTO, LoginoutputDTO, } from "../dtos/UserDTO"
 import { HashManager } from "../services/HashManager"
 import { TokenManager } from "../services/TokenManager"
 import { IdGenerator } from "../services/IdGenerator"
@@ -10,12 +10,12 @@ import { NotFoundError } from "../errors/NotFoundError"
 
 
 export class UserBusiness {
-constructor(
-    private userDatabase : UserDatabase,
-    private idGenerator : IdGenerator,
-    private tokenManeger: TokenManager,
-    private hashManager :HashManager ,
-){}
+    constructor(
+        private userDatabase: UserDatabase,
+        private idGenerator: IdGenerator,
+        private tokenManeger: TokenManager,
+        private hashManager: HashManager,
+    ) { }
 
 
     public getUser = async (q: string | undefined) => {
@@ -23,7 +23,7 @@ constructor(
 
         const usersDB: TUsers[] = await this.userDatabase.getUser(q)
 
-        const users :Users[] = usersDB.map((user) => new Users(
+        const users: Users[] = usersDB.map((user) => new Users(
 
             user.id,
             user.name,
@@ -37,7 +37,6 @@ constructor(
         return users
 
     }
-//--------------------------------------------------------------------------------
     public getUserById = async (id: string) => {
 
         if (id === ":id") {
@@ -51,7 +50,7 @@ constructor(
             throw new Error("Esse id não existe.")
         }
 
-        const user :Users = new Users(
+        const user: Users = new Users(
 
             userDB[0].id,
             userDB[0].name,
@@ -63,61 +62,54 @@ constructor(
         )
         return user
     }
- //--------------------------------------------------------------------------------
+    //--------------------------------------------------------------------------------
 
-    public createUser = async (input:CreateUserInputDTO):Promise<CreateUserOutputDTO> => {
+    public createUser = async (input: CreateUserOutputDTO) => {
 
         const {
-            id,
             name,
             email,
             password,
-            } = input
+        } = input
 
-            console.log("business",id)
-        if (id[0] !== "u") {
-            throw new BadRequestError("O id precisa começar com a letra 'u'.")
-        }
         if (name.length < 2) {
             throw new BadRequestError("'name' deve possuir pelo menos 2 caracteres")
         }
-        if (password.length < 5) {
-            throw new BadRequestError("'password' deve possuir pelo menos 5 caracteres")
-        }
 
+        if (!email.match(/^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/g)) {
+            throw new BadRequestError("ERROR: 'email' must be like 'example@example.example'.")
+          }
+        //   if (!password.match(/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[^\da-zA-Z]).{8,12}$/g)) {
+        //     throw new BadRequestError("ERROR: 'password' must be between 8 and 12 characters, with uppercase and lowercase letters and at least one number and one special character")
+        //   }
 
-        const userDBExists = await this.userDatabase.getUser(id)
+        const emailExist = await this.userDatabase.findEmail(email)
 
-        if (userDBExists) {
-            throw new BadRequestError("O id já existe.")
+        if(emailExist){
+            throw new BadRequestError("Email já cadastrado.")
         }
 
         const idGenerator = this.idGenerator.generate()
+        const hashedPassword = await this.hashManager.hash(password)
+        const role = USER_ROLE.NORMAL
+        const createdAt = new Date().toISOString()
 
         const newUser = new Users(
 
             idGenerator,
             name,
             email,
-            password,
-            USER_ROLE.NORMAL,
-            new Date().toISOString()
+            hashedPassword,
+            role,
+            createdAt
         )
 
-        // const newUserDB: UserDbDTO = {
-
-        //     id: newUser.getId(),
-        //     name: newUser.getName(),
-        //     email: newUser.getEmail(),
-        //     password: newUser.getPassword(),
-        //     role: newUser.getRole(),
-        //     created_at: newUser.getcreatedAt()
-
-        // }
 
         const userDB = newUser.toDBModel()
+            
+        await this.userDatabase.createUser(userDB)
 
-        const payload : TokenPayload = {
+        const payload: TokenPayload = {
             id: newUser.getId(),
             name: newUser.getName(),
             role: newUser.getRole()
@@ -125,20 +117,16 @@ constructor(
 
         const token = this.tokenManeger.createToken(payload)
 
-        await this.userDatabase.createUser(userDB)
-
-        const output :CreateUserOutputDTO = {
-            message: "Cadastro realizado com sucesso.",
-            token:token
+        const output = {
+            token: token
         }
 
-       return output
+        return output
     }
- //--------------------------------------------------------------------------------
 
-    public userLogin = async (login: LoginInputDTO):Promise<LoginoutputDTO> => {
+    public userLogin = async (input: LoginInputDTO): Promise<LoginoutputDTO> => {
 
-        const { email, password } = login
+        const { email, password } = input
 
         if (typeof email !== "string") {
             throw new Error("'email' deve ser string")
@@ -150,11 +138,11 @@ constructor(
             throw new Error("'password' deve possuir pelo menos 5 caracteres")
         }
 
-        const userDB : UserDB | undefined = await this.userDatabase.userLogin(email)
+        const userDB: UserDB | undefined = await this.userDatabase.userLogin(email)
 
 
         if (userDB === undefined) {
-            throw new NotFoundError("o Email não existe")
+            throw new NotFoundError("o Email não existe.")
         }
 
         const user = new Users(
@@ -166,24 +154,24 @@ constructor(
             userDB.created_at
         )
 
+
         const isPasswordCorrect = await this.hashManager.compare(password, user.getPassword())
 
-        if(!isPasswordCorrect){
+        if (!isPasswordCorrect) {
             throw new BadRequestError("password incorreto.")
         }
 
-        const payload = {
+        const payload : TokenPayload = {
             id: user.getId(),
-            name:user.getName(),
-            role:user.getRole()
+            name: user.getName(),
+            role: user.getRole()
         }
         const token = this.tokenManeger.createToken(payload)
 
-        const backLogin :LoginoutputDTO = {
-            token:token
+        const backLogin: LoginoutputDTO = {
+            token: token
         }
         return backLogin
     }
 }
 
-//--------------------------------------------------------------------------------

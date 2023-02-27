@@ -1,16 +1,15 @@
 import { Request, Response } from "express"
 import { UserBusiness } from "../business/UsersBusiness"
-import { LoginInputDTO, UserDTO } from "../dtos/UsersDTO"
-import {BaseError} from "../errors/BaseError"
-
+import { LoginInputDTO,CreateUserOutputDTO } from "../dtos/UserDTO"
+import { BaseError } from "../errors/BaseError"
+import { UserDTO } from "../dtos/UserDTO"
 
 
 
 export class UserController {
     constructor(
-        private userDTO: UserDTO,
         private userBusiness: UserBusiness,
-
+        private userDTO : UserDTO
 
     ) { }
     public getUsers = async (req: Request, res: Response) => {
@@ -55,19 +54,18 @@ export class UserController {
         }
     }
     //----------------------------------------------------------------------
-    public createtUser = async (req: Request, res: Response) => {
+    public createUser = async (req: Request, res: Response) => {
 
         try {
-
+           
             const input = this.userDTO.createUserDTO(
-                
-                req.body.id,
                 req.body.name,
                 req.body.email,
-                req.body.password,
-                req.body.role
+                req.body.password
+
             )
-                console.log("controller",req.body.id)
+
+            console.log(input)
             const output = await this.userBusiness.createUser(input)
 
             res.status(201).send(output)
@@ -88,7 +86,7 @@ export class UserController {
 
         try {
 
-            const input :LoginInputDTO = {
+            const input: LoginInputDTO = {
                 email: req.body.email,
                 password: req.body.password
 

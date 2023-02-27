@@ -1,12 +1,12 @@
--- Active: 1675094188763@@127.0.0.1@3306
+-- Active: 1677261676572@@127.0.0.1@3306
 
 CREATE TABLE users (
-    id TEXT UNIQUE PRIMARY KEY NOT NULL,
+    id TEXT PRIMARY KEY UNIQUE NOT NULL,
     name TEXT NOT NULL,
-    email TEXT NOT NULL UNIQUE,
+    email TEXT UNIQUE NOT NULL,
     password TEXT NOT NULL,
     role TEXT NOT NULL,
-    created_at TEXT DEFAULT (DATETIME())
+    created_at TEXT DEFAULT (DATETIME()) NOT NULL
 );
 CREATE TABLE posts (
     id TEXT UNIQUE PRIMARY KEY NOT NULL,
@@ -33,8 +33,8 @@ CREATE TABLE likes_deslikes (
     ON UPDATE CASCADE
 );
 INSERT INTO users (id, name, email, password,role)
-VALUES ("u001", "Jose Saramago", "Jose@gmail.com", "js123", "escritor"),
-("u002", "Clarisse Lispector", "clarisse@gmail.com", "cl123", "escritor");
+VALUES ("u001", "Jose Saramago", "Jose@gmail.com", "js123", "normal"),
+("u002", "Clarisse Lispector", "clarisse@gmail.com", "cl123", "admin");
 
 INSERT INTO posts (id, creator_id, content, likes)
 VALUES ("p001","u001", "viagem",1),
@@ -68,3 +68,4 @@ JOIN users
 ON posts.creator_id = users.id;
 
 SELECT * from users;
+DROP TABLE users;
