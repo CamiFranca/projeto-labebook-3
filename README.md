@@ -32,7 +32,7 @@ _ Aplicação banck-end de servidor express com banco de dados SQL SQlite 3.
 
 ###### Postman
 ##Requisitos:
-|----|        |------|                  |----|
+
 |Endpoints|	Autenticação e Autorização|	Código|
 |----|     |----|             |---|
 |signup| identificação UUID|	POO|
