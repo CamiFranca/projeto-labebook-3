@@ -31,17 +31,28 @@ _ Aplicação banck-end de servidor express com banco de dados SQL SQlite 3.
 ###### Roteamento
 
 ###### Postman
-##Requisitos:
 
-|Endpoints |	Autenticação e Autorização |	Código |
-|----------| |---------------------------||--------|
-| signup| identificação UUID |	POO |
-| login |	senhas hasheadas com Bcrypt| Arquitetura em camadas|
-| get posts |	tokens JWT |	Roteadores no Express|
-| create post |	
-| edit post |	
-| delete post |	
-| Like / dislike post |	
+# Requisitos:
+
+## Endpoints: 
+
+- signup
+- login
+- get posts
+- create post
+- edit post
+- delete post 
+- Like / dislike post
+ 	
+## Autenticação e Autorização 
+- identificação UUID 
+-  senhas hasheadas com Bcrypt
+-  tokens JWT 
+
+## Código:
+-  Arquitetura em camadas
+-  POO 
+-  Roteadores no Express
 
 
 # Exemplos de requisição
