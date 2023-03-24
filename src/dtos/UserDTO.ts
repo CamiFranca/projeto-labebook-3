@@ -5,16 +5,6 @@ export interface CreateUserOutputDTO {
     email: string,
     password: string,
 }
-// export interface CreateUserInputDTO {
-//     name: unknown,
-//     email: unknown,
-//     password: unknown
-// }
-
-// export interface CreateUserOutputDTO {
-//     token: string
-// }
-
 
 export interface UserDbDTO {
     id: string,

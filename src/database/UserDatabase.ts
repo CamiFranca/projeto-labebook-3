@@ -42,7 +42,7 @@ export class UserDatabase extends BaseDatabase {
     public async findEmail(email:string): Promise<UserDB|undefined>  {
         const emailExists :UserDB[] = await BaseDatabase
         .connection(UserDatabase.TABLE_USERS)
-        .select()
+        // .select()
         .where({email})
         return emailExists[0]
 

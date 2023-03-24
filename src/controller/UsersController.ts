@@ -1,6 +1,6 @@
 import { Request, Response } from "express"
 import { UserBusiness } from "../business/UsersBusiness"
-import { LoginInputDTO,CreateUserOutputDTO } from "../dtos/UserDTO"
+import { LoginInputDTO} from "../dtos/UserDTO"
 import { BaseError } from "../errors/BaseError"
 import { UserDTO } from "../dtos/UserDTO"
 
@@ -65,7 +65,6 @@ export class UserController {
 
             )
 
-            console.log(input)
             const output = await this.userBusiness.createUser(input)
 
             res.status(201).send(output)
@@ -82,7 +81,7 @@ export class UserController {
         }
     }
 
-    public userLogin = async (res: Response, req: Request) => {
+    public userLogin = async (req: Request, res: Response) => {
 
         try {
 
