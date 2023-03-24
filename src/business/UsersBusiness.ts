@@ -2,7 +2,7 @@ import { UserDatabase } from "../database/UserDatabase"
 import { Users } from "../models/User"
 import { TokenPayload, TUsers, UserDB, USER_ROLE } from "../type"
 import { BadRequestError } from '../errors/BadRequestError'
-import {CreateUserOutputDTO, LoginInputDTO, LoginoutputDTO, } from "../dtos/UserDTO"
+import { CreateUserOutputDTO, LoginInputDTO, LoginoutputDTO, } from "../dtos/UserDTO"
 import { HashManager } from "../services/HashManager"
 import { TokenManager } from "../services/TokenManager"
 import { IdGenerator } from "../services/IdGenerator"
@@ -78,14 +78,12 @@ export class UserBusiness {
 
         if (!email.match(/^[\w-.]+@([\w-]+.)+[\w-]{2,4}$/g)) {
             throw new BadRequestError("ERROR: 'email' must be like 'example@example.example'.")
-          }
-        //   if (!password.match(/^(?=.[a-z])(?=.[A-Z])(?=.\d)(?=.[^\da-zA-Z]).{8,12}$/g)) {
-        //     throw new BadRequestError("ERROR: 'password' must be between 8 and 12 characters, with uppercase and lowercase letters and at least one number and one special character")
-        //   }
+        }
+
 
         const emailExist = await this.userDatabase.findEmail(email)
 
-        if(emailExist){
+        if (emailExist) {
             throw new BadRequestError("Email já cadastrado.")
         }
 
@@ -106,7 +104,7 @@ export class UserBusiness {
 
 
         const userDB = newUser.toDBModel()
-            
+
         await this.userDatabase.createUser(userDB)
 
         const payload: TokenPayload = {
@@ -161,7 +159,7 @@ export class UserBusiness {
             throw new BadRequestError("password incorreto.")
         }
 
-        const payload : TokenPayload = {
+        const payload: TokenPayload = {
             id: user.getId(),
             name: user.getName(),
             role: user.getRole()

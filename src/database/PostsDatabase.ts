@@ -36,7 +36,7 @@ export class PostDatabase extends BaseDatabase {
     public idExist = async (idToEdite: string): Promise<PostDB | undefined> => {
         const result: PostDB[] = await BaseDatabase
             .connection(PostDatabase.TABLE_POSTS)
-            .where({ idToEdite })
+            .where({ id:idToEdite })
         return result[0]
 
     }
@@ -51,7 +51,7 @@ export class PostDatabase extends BaseDatabase {
     public delete = async (idToDelete: string): Promise<void> => {
         await BaseDatabase.connection(PostDatabase.TABLE_POSTS)
             .delete()
-            .where({ idToDelete })
+            .where({ id: idToDelete })
     }
 
     public findPostWhithCreator = async (postId: string): Promise<postAndCreatorDB | undefined> => {
@@ -73,50 +73,101 @@ export class PostDatabase extends BaseDatabase {
     }
 
 
-    public likeOrDeslike = async (likeOrDeslike: LikeOrDeslikeDB): Promise<void> => {
-        await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
-            .insert(likeOrDeslike)
+    // public likeOrDeslike = async (likeOrDeslike: LikeOrDeslikeDB): Promise<void> => {
+    //     await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
+    //         .insert(likeOrDeslike)
 
+    // }
+
+    // public findLikeDeslike = async (likeOrDeslike: LikeOrDeslikeDB)
+    //     : Promise<null | POST_LIKE> => {
+    //     const [result]: PostDB[] | [] = await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
+    //         .select()
+    //         .where({
+    //             user_id: likeOrDeslike.user_id,
+    //             post_id: likeOrDeslike.post_id
+    //         })
+
+    //     if (likeOrDeslike) {
+    //         return likeOrDeslike.like === 1
+    //             ? POST_LIKE.ALREADY_LIKED
+    //             : POST_LIKE.ALREADY_DESLIKED
+    //     } else {
+    //         return null
+    //     }
+
+    //     }
+
+    // public removeLikeOrDeslike = async (likeOrDeslike: LikeOrDeslikeDB): Promise<void> => {
+    //     await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
+    //         .delete()
+    //         .where({
+    //             user_id: likeOrDeslike.user_id,
+    //             post_id: likeOrDeslike.post_id
+    //         })
+
+    // }
+
+    // public updateLikeOrDeslike = async (likeOrDeslike: LikeOrDeslikeDB): Promise<void> => {
+    //     await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
+    //         .update(likeOrDeslike)
+    //         .where({
+    //             user_id: likeOrDeslike.user_id,
+    //             post_id: likeOrDeslike.post_id
+    //         })
+    
+
+    // }
+
+
+     public likeOrDislikePost = async (
+        likeDislike: LikeDislikeDB
+    ): Promise<void> => {
+        await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
+            .insert(likeDislike)
     }
 
-    public findLikeDeslike = async (likeOrDeslike: LikeOrDeslikeDB)
-        : Promise<null | POST_LIKE> => {
-        const [result]: PostDB[] | [] = await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
+    public findLikeDislike = async (
+        likeDislikeDBToFind: LikeDislikeDB
+    ): Promise<POST_LIKE | null> => {
+        const [ likeDislikeDB ]: LikeDislikeDB[] = await BaseDatabase
+            .connection(PostDatabase.TABLE_LIKE_DESLIKE)
             .select()
             .where({
-                user_id: likeOrDeslike.user_id,
-                post_id: likeOrDeslike.post_id
+                user_id: likeDislikeDBToFind.user_id,
+                post_id: likeDislikeDBToFind.post_id
             })
 
-        if (likeOrDeslike) {
-            return likeOrDeslike.like === 1
+        if (likeDislikeDB) {
+            return likeDislikeDB.like === 1
                 ? POST_LIKE.ALREADY_LIKED
                 : POST_LIKE.ALREADY_DESLIKED
+
         } else {
             return null
         }
-
-
     }
 
-    public removeLikeOrDeslike = async (likeOrDeslike: LikeOrDeslikeDB): Promise<void> => {
+    public removeLikeDislike = async (
+        likeDislikeDB: LikeDislikeDB
+    ): Promise<void> => {
         await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
             .delete()
             .where({
-                user_id: likeOrDeslike.user_id,
-                post_id: likeOrDeslike.post_id
+                user_id: likeDislikeDB.user_id,
+                post_id: likeDislikeDB.post_id
             })
-
     }
 
-    public updateLikeOrDeslike = async (likeOrDeslike: LikeOrDeslikeDB): Promise<void> => {
+    public updateLikeDislike = async (
+        likeDislikeDB: LikeDislikeDB
+    ) => {
         await BaseDatabase.connection(PostDatabase.TABLE_LIKE_DESLIKE)
-            .update(likeOrDeslike)
+            .update(likeDislikeDB)
             .where({
-                user_id: likeOrDeslike.user_id,
-                post_id: likeOrDeslike.post_id
+                user_id: likeDislikeDB.user_id,
+                post_id: likeDislikeDB.post_id
             })
-
     }
-
 }
+

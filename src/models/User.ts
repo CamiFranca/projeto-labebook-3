@@ -80,6 +80,8 @@ export class Users {
             created_at: this.createdAt
         }
     }
+
+
 }
 
 

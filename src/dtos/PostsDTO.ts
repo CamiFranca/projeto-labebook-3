@@ -8,7 +8,7 @@ export type GetPostOutputDTO = PostModel[]
 
 export interface CreatePostIntputDTO {
     token: string | undefined,
-    content: unknown
+    content: string | undefined
 }
 
 export interface EditePostInputDTO {

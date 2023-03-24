@@ -1,4 +1,4 @@
--- Active: 1677261676572@@127.0.0.1@3306
+-- Active: 1679611453364@@127.0.0.1@3306
 
 CREATE TABLE users (
     id TEXT PRIMARY KEY UNIQUE NOT NULL,
@@ -48,7 +48,7 @@ VALUES("u001","p002",1),
 ("u002","p001",1);
 
 
-DROP TABLE likes_deslikes;
+SELECT * FROM likes_deslikes;
 
 UPDATE posts 
 SET deslikes = 1
@@ -67,5 +67,5 @@ FROM posts
 JOIN users
 ON posts.creator_id = users.id;
 
-SELECT * from users;
+SELECT * from posts;
 DROP TABLE users;

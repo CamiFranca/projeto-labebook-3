@@ -4,6 +4,7 @@ import { Request, Response } from "express";
 import { PostBusiness } from "../business/PostsBusiness";
 import { CreatePostIntputDTO, DeletePostInputDTO, EditePostInputDTO, getPostInputDTO } from "../dtos/PostsDTO";
 import { LikeOrDeslikeInputDTO } from "../dtos/Like_deslikeDTO";
+import { BaseError } from "../errors/BaseError";
 
 
 export class PostController {
@@ -36,7 +37,7 @@ export class PostController {
         }
     }
 
-    public createPost = async (res: Response, req: Request) => {
+    public createPost = async ( req: Request,res: Response) => {
 
         try {
 
@@ -67,7 +68,7 @@ export class PostController {
     }
 
 
-    public editePost = async (res: Response, req: Request) => {
+    public editePost = async (req: Request,res: Response) => {
 
         try {
 
@@ -126,34 +127,56 @@ export class PostController {
         }
     }
 
-    public likeOrDeslike = async (req: Request, res: Response) => {
+    // public likeOrDeslike = async (req: Request, res: Response) => {
 
-        try {
+    //     try {
 
-            const input :LikeOrDeslikeInputDTO = {
-                idLikeOrDeslike : req.params.id,
-                token: req.headers.authorization,
-                like: req.body.like
-            }
+    //         const input :LikeOrDeslikeInputDTO = {
+    //             idLikeOrDeslike : req.params.id,
+    //             token: req.headers.authorization,
+    //             like: req.body.like
+    //         }
+    //         console.log("CONTROLLER", input)
 
-            await this.postBusiness.likeOrDeslike(input)
+    //         await this.postBusiness.likeOrDeslike(input)
 
-            res.status(200).end
+    //         res.status(200).end
 
-        } catch (error) {
-            console.log(error)
+    //     } catch (error) {
+    //         console.log(error)
 
-            if (req.statusCode === 200) {
-                res.status(500)
-            }
+    //         if (req.statusCode === 200) {
+    //             res.status(500)
+    //         }
 
-            if (error instanceof Error) {
-                res.send(error.message)
-            } else {
-                res.send("Erro inesperado")
-            }
+    //         if (error instanceof Error) {
+    //             res.send(error.message)
+    //         } else {
+    //             res.send("Erro inesperado")
+    //         }
+    //     }
+   // }
+
+   public likeOrDislikePost = async (req: Request, res: Response) => {
+    try {
+        const input: LikeOrDeslikeInputDTO = {
+            idLikeOrDeslike: req.params.id,
+            token: req.headers.authorization,
+            like: req.body.like
+        }
+
+        await this.postBusiness.likeOrDislikePost(input)
+
+        res.status(200).end()
+    } catch (error) {
+        console.log(error)
+        if (error instanceof BaseError) {
+            res.status(error.statusCode).send(error.message)
+        } else {
+            res.status(500).send("Erro inesperado")
         }
     }
+}
 
 
 
