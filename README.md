@@ -34,8 +34,7 @@ _ Aplicação banck-end de servidor express com banco de dados SQL SQlite 3.
 ##Requisitos:
 
 |Endpoints |	Autenticação e Autorização |	Código |
-|----|            |----|                 |---|
-
+|----------| |---------------------------||--------|
 | signup| identificação UUID |	POO |
 | login |	senhas hasheadas com Bcrypt| Arquitetura em camadas|
 | get posts |	tokens JWT |	Roteadores no Express|
@@ -45,7 +44,7 @@ _ Aplicação banck-end de servidor express com banco de dados SQL SQlite 3.
 | Like / dislike post |	
 
 
-#Exemplos de requisição
+# Exemplos de requisição
 
 - Signup Endpoint público utilizado para cadastro. Devolve um token jwt.
 
@@ -98,7 +97,7 @@ https://documenter.getpostman.com/view/24460722/2s93RMWGDT
 
 - npm i --save-dev @types/bcryptjs: dependência de desenvolvimento
 
-# Execute a aplicação
+## Execute a aplicação
 
 - rodar o script de dev (npm run dev) ou rodar ou buildar o (npm run start).
 
