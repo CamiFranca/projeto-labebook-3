@@ -4,7 +4,7 @@
 
 ### API para aplicação de gestão de projetos.
 
-_ Aplicação banck-end de servidor express com banco de dados SQL SQlite 3.
+_Aplicação banck-end de servidor express com banco de dados SQL SQlite 3.
 
 ### Stack utilizada: Back-end:
 
