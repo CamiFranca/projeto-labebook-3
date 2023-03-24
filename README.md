@@ -79,7 +79,7 @@ https://documenter.getpostman.com/view/24460722/2s93RMWGDT
 
 - Acesse a pasta do projeto no seu terminal, ex: cd projeto-labook
 
-## INSTALE AS DEPENDÊNCIAS:
+## Instale as dependências:
 
 - npm install: Instala todas as dependências listadas no package.json;
 
