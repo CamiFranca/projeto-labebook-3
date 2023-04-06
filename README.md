@@ -1,6 +1,6 @@
 # Projeto-Labebook-3
 
-##### O Projeto Labook foi realizado na stack back-end; O projeto foi realizado é uma rede social que busca promover a interação entre seus usuários, onde eles poderão criar e curtir as postagens.
+##### O Projeto Labook foi realizado na stack back-end; O projeto  é uma rede social que busca promover a interação entre seus usuários, onde eles poderão criar e curtir as postagens.
 
 ### API para aplicação de gestão de projetos.
 
